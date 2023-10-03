@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/presentation_layer/presentation_layer.dart';
 
+import '../../domain_layer/entities/wether_entity.dart';
+
 class Home extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -24,14 +26,15 @@ class Home extends StatelessWidget{
           if (weatherProvider.weather == null)
             const Text('Enter a location and press Get Weather'),
           if (weatherProvider.weather != null) ...[
-            Text('Location: ${weatherProvider.weather!.fold(
-                  (weather) => '${weather.cnt}',
-                  (failure) => "failure.message : 400",
-            )}'),
-            Text('Temperature: ${weatherProvider.weather!.fold(
-                  (weather) => '${weather.city}',
-                  (failure) => "failure.message : 400",
-            )}°C'),
+
+            weatherProvider.weather!.fold((weather) => ListView.builder(
+
+              itemCount: weather.cnt ?? 0,
+              itemBuilder: (context, index) {
+                final item = weather.list!.weatherEntityList![index];
+
+                return buildContainer(item);
+              },) , (r) => Text("Somethign went wrong")),
           ],
           ElevatedButton(
             onPressed: () {
@@ -42,5 +45,9 @@ class Home extends StatelessWidget{
         ],
       ),
     );
+  }
+
+  Widget buildContainer(WeatherEntityList item) {
+    return Container();
   }
 }
